@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIGI-TAKSIR — Pegadaian Mayang Mangurai</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- CSS DIPISAH -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <!-- ── HEADER ── -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="logo-container">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Danantara_Indonesia_%28no_SW%29.svg/3840px-Danantara_Indonesia_%28no_SW%29.svg.png"
+              alt="Logo Danantara"
+              class="logo-danantara"
+            />
+
+            <div class="logo-divider"></div>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Pegadaian_logo_%282013%29.svg/1280px-Pegadaian_logo_%282013%29.svg.png"
+              alt="Logo Pegadaian"
+              class="logo-pegadaian"
+            />
+          </div>
+        </div>
+
+        <div class="counter-badge">
+          <span id="countDisplay">0</span>
+          <p>Simulasi</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- ── MODE TABS ── -->
+      <div class="mode-tabs">
+        <button
+          class="mode-tab active"
+          id="tabTaksir"
+          onclick="switchTab('taksir')"
+        >
+          Simulasi Gadai
+        </button>
+        <button class="mode-tab" id="tabCicil" onclick="switchTab('cicil')">
+          Cicil Emas
+        </button>
+      </div>
+
+      <!-- SECTION: SIMULASI GADAI -->
+      <div id="sectionTaksir">
+        <!-- STEP 1: Pilih Produk -->
+        <div id="stepPilihProduk">
+          <p class="section-title">Pilih Produk Gadai :</p>
+          <div class="product-grid">
+            <div
+              class="product-pill"
+              id="pill-KCA"
+              onclick="pilihProduk('KCA')"
+            >
+              <div class="pill-name">KCA</div>
+              <div class="pill-desc">Kredit Cepat Aman<br />Maks 120 Hari</div>
+            </div>
+            <div
+              class="product-pill"
+              id="pill-FLEKSI"
+              onclick="pilihProduk('FLEKSI')"
+            >
+              <div class="pill-name">FLEKSI</div>
+              <div class="pill-desc">Gadai Fleksibel<br />15–180 Hari</div>
+            </div>
+            <div
+              class="product-pill"
+              id="pill-KRASIDA"
+              onclick="pilihProduk('KRASIDA')"
+            >
+              <div class="pill-name">KRASIDA</div>
+              <div class="pill-desc">Kredit Angsuran<br />6–48 Bulan</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Input Item -->
+        <div id="stepInput" class="hidden">
+          <button class="back-btn" onclick="kembali()">← Ganti Produk</button>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>
+                📦 Daftar Barang Jaminan <span id="labelProdukAktif"></span>
+              </h2>
+              <span
+                style="
+                  font-size: 11px;
+                  color: var(--gray-500);
+                  font-weight: 600;
+                "
+                >Tambah hingga 10 item</span
+              >
+            </div>
+
+            <div class="panel-body">
+              <div
+                class="sub-tab-container"
+                style="display: flex; gap: 10px; margin-bottom: 20px"
+              >
+                <button
+                  class="sub-tab-btn active"
+                  id="btnModeTaksir"
+                  onclick="switchMode('taksir')"
+                >
+                  Taksir Emas
+                </button>
+                <button
+                  class="sub-tab-btn"
+                  id="btnModePinjaman"
+                  onclick="switchMode('pinjaman')"
+                >
+                  Input Pinjaman
+                </button>
+              </div>
+
+              <div id="containerTaksirEmas">
+                <div class="type-toggle">
+                  <button
+                    class="type-btn active"
+                    id="btnPerh"
+                    onclick="switchType('perhiasan')"
+                  >
+                    💍 Perhiasan
+                  </button>
+                  <button
+                    class="type-btn"
+                    id="btnBat"
+                    onclick="switchType('batangan')"
+                  >
+                    🔶 Batangan
+                  </button>
+                </div>
+
+                <div class="item-list" id="itemList"></div>
+
+                <button
+                  class="add-item-btn"
+                  id="addItemBtn"
+                  onclick="tambahItem()"
+                >
+                  <span style="font-size: 18px">＋</span> Tambah Item
+                </button>
+
+                <div class="subtotal-bar mt-12" id="subtotalBar">
+                  <div class="sb-item">
+                    <div class="sb-label">Total Taksiran</div>
+                    <div class="sb-val" id="sbTaksiran">Rp 0</div>
+                  </div>
+                  <div class="sb-item">
+                    <div class="sb-label">Estimasi UP</div>
+                    <div class="sb-val" id="sbUP">Rp 0</div>
+                  </div>
+                </div>
+
+                <div class="tenor-row">
+                  <div class="form-group">
+                    <label>Tenor</label>
+                    <select id="tenor" onchange="updateSubtotal()"></select>
+                  </div>
+                </div>
+
+                <button class="btn-calc" onclick="hitungTaksiran()">
+                  🔍 Hitung Estimasi Lengkap
+                </button>
+              </div>
+
+              <div id="containerInputPinjaman" style="display: none">
+                <div class="input-card-pinjaman" style="padding: 10px 0">
+                  <div class="form-group">
+                    <label class="control-label">Nominal Pinjaman (Rp)</label>
+                    <input
+                      type="number"
+                      id="inputNominalPinjaman"
+                      class="dp-input-box"
+                      style="width: 100%; border: 1px solid var(--gray-300)"
+                      placeholder="Contoh: 500.000"
+                    />
+                  </div>
+                  <div class="form-group mt-12">
+                    <label class="control-label">Jangka Waktu</label>
+                    <input
+                      type="text"
+                      value="120 Hari"
+                      disabled
+                      class="dp-input-box"
+                      style="
+                        width: 100%;
+                        background: var(--gray-100);
+                        color: var(--gray-500);
+                        border: 1px solid var(--gray-200);
+                      "
+                    />
+                  </div>
+                  <button
+                    class="btn-calc mt-20"
+                    onclick="hitungPinjamanLangsung()"
+                    style="background: var(--green); color: white; width: 100%"
+                  >
+                    🚀 Hitung Pinjaman
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HASIL -->
+          <div id="panelHasil" class="hidden">
+            <div class="hasil-panel">
+              <div class="hasil-title">
+                📊 Hasil Estimasi — <span id="lblProdukHasil"></span>
+              </div>
+
+              <!-- Breakdown per item -->
+              <div id="breakdownItems" class="breakdown-list"></div>
+
+              <div
+                class="divider"
+                style="border-color: rgba(255, 255, 255, 0.1); margin: 14px 0"
+              ></div>
+
+              <div class="hasil-row highlight">
+                <span class="hr-label">💰 Total Taksiran</span>
+                <span class="hr-val" id="resTotalTaksiran">—</span>
+              </div>
+              <div class="hasil-row highlight">
+                <span class="hr-label">🏦 Estimasi UP (Uang Pinjaman)</span>
+                <span class="hr-val" id="resUP">—</span>
+              </div>
+              <div class="hasil-row">
+                <span class="hr-label">📋 Tarif Sewa Modal</span>
+                <span class="hr-val" id="resSewaDesc">—</span>
+              </div>
+              <div class="hasil-row">
+                <span class="hr-label">📅 Estimasi Jatuh Tempo</span>
+                <span class="hr-val" id="resJatuhTempo">—</span>
+              </div>
+              <div class="hasil-row">
+                <span class="hr-label" id="lblSewaNominal">Estimasi Sewa:</span>
+              </div>
+
+              <!-- KCA detail table -->
+              <div id="sectionDetailKCA" class="hidden kca-table-wrap mt-8">
+                <table class="kca-table">
+                  <thead>
+                    <tr>
+                      <th>Periode</th>
+                      <th>Hari ke-</th>
+                      <th>Sewa Kumulatif</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bodyTabelKCA"></tbody>
+                </table>
+              </div>
+
+              <div class="chart-wrap1">
+                <canvas id="loanChart"></canvas>
+              </div>
+            </div>
+
+            <div class="disclaimer">
+              <span class="disc-icon">⚠️</span>
+              <p>
+                Hasil di atas adalah <strong>estimasi</strong> berdasarkan STL
+                resmi. Nilai taksiran resmi ditentukan oleh penaksir
+                bersertifikat setelah pengujian fisik langsung. Angka ini bukan
+                merupakan penawaran atau janji pinjaman.
+              </p>
+            </div>
+
+            <button
+              class="btn-calc"
+              onclick="exportPDF()"
+              style="margin-top: 10px; background: #2563eb"
+            >
+              📄 Export PDF
+            </button>
+
+            <div class="rating-panel">
+              <p>Seberapa membantu simulasi ini?</p>
+              <div class="stars" id="starContainer">
+                <span class="star" onclick="setRating(1)">★</span>
+                <span class="star" onclick="setRating(2)">★</span>
+                <span class="star" onclick="setRating(3)">★</span>
+                <span class="star" onclick="setRating(4)">★</span>
+                <span class="star" onclick="setRating(5)">★</span>
+              </div>
+            </div>
+          </div>
+          <!-- /panelHasil -->
+        </div>
+        <!-- /stepInput -->
+      </div>
+      <!-- /sectionTaksir -->
+
+      <!-- SECTION: CICIL EMAS -->
+      <div id="sectionCicil" class="hidden">
+        <div class="panel">
+          <div class="ce-header">
+            <h2>🥇 Simulasi Cicil Emas Pegadaian</h2>
+            <p>Harga otomatis diperbarui setiap hari</p>
+            <div class="ce-date" id="date-display"></div>
+          </div>
+
+          <div class="panel-body">
+            <p class="section-title">Pilih Margin Angsuran :</p>
+            <div class="tab-row">
+              <button
+                class="tab-btn active"
+                onclick="switchMargin(0.0053,this)"
+              >
+                0,53%
+              </button>
+              <button class="tab-btn" onclick="switchMargin(0.0071,this)">
+                0,71%
+              </button>
+              <button class="tab-btn" onclick="switchMargin(0.0092,this)">
+                0,92%
+              </button>
+            </div>
+            <div class="control-group">
+              <label class="control-label">INPUT NOMINAL DP (RUPIAH):</label>
+              <div class="input-container">
+                <span class="currency-label">Rp</span>
+                <input
+                  type="text"
+                  id="dp-rupiah-input"
+                  class="dp-input-box"
+                  placeholder="Contoh: 500.000"
+                  oninput="handleDPInput(this.value)"
+                />
+              </div>
+              <div id="dp-info-text" class="info-dp">
+                Minimal DP 15% dari harga emas
+              </div>
+            </div>
+          </div>
+
+          <div class="ce-table-wrap">
+            <table class="ce-table">
+              <thead>
+                <tr>
+                  <th>Denominasi</th>
+                  <th>DP 15% + Admin</th>
+                  <th>Nilai Pinjaman</th>
+                  <th>3 Bln</th>
+                  <th>6 Bln</th>
+                  <th>12 Bln</th>
+                  <th>18 Bln</th>
+                  <th>24 Bln</th>
+                  <th>36 Bln</th>
+                </tr>
+              </thead>
+              <tbody id="simulation-table"></tbody>
+            </table>
+          </div>
+
+          <div class="disclaimer mt-12">
+            <span class="disc-icon">⚠️</span>
+            <p>
+              Harga emas dan angsuran bersifat estimasi. Konfirmasi harga resmi
+              ke petugas Pegadaian. DP 15% + biaya administrasi Rp50.000.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- /sectionCicil -->
+    </main>
+
+    <!-- ── TRING CTA (selalu tampil) ── -->
+    <footer class="site-footer">
+      <div class="tring-cta">
+        <span class="tring-icon">📱</span>
+        <div class="tring-text">
+          <h3>Transaksi lebih mudah di mana saja?</h3>
+          <p>Download Tring — aplikasi resmi Pegadaian</p>
+        </div>
+        <button class="tring-btn" onclick="openTringApp()">Download</button>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 DIGI-TAKSIR — Pegadaian Cabang Mayang Mangurai</p>
+      </div>
+    </footer>
+
+    <!-- JS DIPISAH -->
+    <script src="js/script.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </body>
+</html>
